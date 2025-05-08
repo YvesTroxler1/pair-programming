@@ -30,5 +30,21 @@ export function calculatePayslip(salary: Salary): Payslip {
     totalDeductions: 0.0,
     net: salary.gross,
   };
+  const monthly = salary.gross;
+  const yearly = monthly * 12;
+
+  const after17thBirthday = new Date(salary.born.getFullYear() + 17, salary.born.getMonth(), salary.born.getDate());
+  const deductionStart = new Date(after17thBirthday.getFullYear() + 1, 0, 1);
+  const socialDeductionsAllowed = salary.payday >= deductionStart;
+
+  if (socialDeductionsAllowed) {
+    for (const key of ["AHV", "IV", "EO", "ALV", "NBU", "PK"]) {
+      const rate = DEDUCTION_RATES.get(key) / 100;
+      const amount = monthly * rate;
+      result.deductions.set(key, amount);
+        result.totalDeductions += amount;
+    }
+  }
+
   return result;
 }

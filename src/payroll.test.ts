@@ -1,4 +1,4 @@
-import {calculatePayslip, Salary} from "./payroll";
+import { calculatePayslip, Salary } from "./payroll";
 
 describe("calculatePayroll", () => {
     it("should not deduct anything for a 16 year old with 700 francs", () => {
@@ -29,4 +29,22 @@ it("should deduct AHV.... for an 18 year old with 1200 franke", () => {
     expect(payslip.deductions.has("ALV")).toBe(true);
     expect(payslip.deductions.has("NBU")).toBe(true);
     expect(payslip.deductions.has("PK")).toBe(true);
+})
+
+it("should deduct everything for a 21 year old with 5900 franke", () => {
+    const salary: Salary = {
+        born: new Date("2002-03-01"),
+        payday: new Date("2025-08-01"),
+        gross: 5900,
+    };
+
+    const payslip = calculatePayslip(salary);
+    expect(payslip.deductions.has("AHV")).toBe(true);
+    expect(payslip.deductions.has("IV")).toBe(true);
+    expect(payslip.deductions.has("EO")).toBe(true);
+    expect(payslip.deductions.has("ALV")).toBe(true);
+    expect(payslip.deductions.has("NBU")).toBe(true);
+    expect(payslip.deductions.has("PK")).toBe(true);
+    expect(payslip.net).toBeLessThan(5900);
+
 })

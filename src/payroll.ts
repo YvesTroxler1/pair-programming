@@ -46,5 +46,14 @@ export function calculatePayslip(salary: Salary): Payslip {
     }
   }
 
+  if (yearly >= 22680 && socialDeductionsAllowed) {
+    const rate = DEDUCTION_RATES.get("PK") / 100;
+    const amount = monthly * rate;
+    result.deductions.set("PK", amount);
+    result.totalDeductions += amount;
+  }
+
+  result.net = salary.gross - result.totalDeductions;
+
   return result;
 }
